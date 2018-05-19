@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 
 """
-    Based on Arduino PID Library (Version 1.0.1) by Brett Beauregard <br3ttb@gmail.com> brettbeauregard.com
+    The original is based on Arduino PID Library (Version 1.0.1) by Brett Beauregard <br3ttb@gmail.com> brettbeauregard.com
+    The original is made through Jeremy Bornstein
+    This version is the python3 version and is made by Reinier
+    
 """
 
 import datetime
@@ -26,8 +29,8 @@ class PID(object):
         self._sample_timedelta = None
         self._output_value = None
         self._last_input = None
-        self._out_min = -sys.maxint - 1
-        self._out_max = sys.maxint
+        self._out_min = -sys.maxsize - 1
+        self._out_max = sys.maxsize
 
         self.set_output_limits(0, 255)
         self.sample_time = 100  # milliseconds
