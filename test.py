@@ -58,7 +58,7 @@ class SimpleHeater(object):
     def heating(self, value):
         new_heating = value is not False and value != 0
         if new_heating != self._heating:
-            print(("* Heat is {}".format("ON" if new_heating else "OFF")))
+            print("* Heat is {}".format("ON" if new_heating else "OFF"))
             self._update_temperature()
             self._heating = new_heating
 
@@ -95,7 +95,7 @@ def test_1():
         elapsed_time = (datetime.datetime.now() - start_time).total_seconds()
         pid.compute()
         if x % 1000 == 0:
-            print(("Elapsed time: {}; temperature: {:.2f}".format(elapsed_time, heater.temperature)))
+            print("Elapsed time: {}; temperature: {:.2f}".format(elapsed_time, heater.temperature))
         if has_large_gap():
             if not set_for_large_gap:
                 print("* RETUNING FOR LARGE GAP")
@@ -111,7 +111,6 @@ def test_1():
 
 
 def test_0():
-    print("test 0")
     start_time = datetime.datetime.now()
     heater = SimpleHeater()
 
