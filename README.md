@@ -1,8 +1,7 @@
 jataruku
 ========
 
-This project provides a PID controller written in Python3 in contrast to the orignal. The orignal is made by Jeremy Bornstein This is based on 
-[the Arduino PID code written by Brett Beauregard](https://github.com/br3ttb/Arduino-PID-Library).
+This project provides a PID controller written in Python3 in contrast to the orignal. The original is made by Jeremy Bornstein This is based on [the Arduino PID code written by Brett Beauregard](https://github.com/br3ttb/Arduino-PID-Library).
 
 Brett's code is the result of much research and thought on his part, which
 he has [generously documented](http://brettbeauregard.com/blog/2011/04/improving-the-beginners-pid-introduction/).
