@@ -58,7 +58,7 @@ class SimpleHeater(object):
     def heating(self, value):
         new_heating = value is not False and value != 0
         if new_heating != self._heating:
-            print "* Heat is {}".format("ON" if new_heating else "OFF")
+            print(("* Heat is {}".format("ON" if new_heating else "OFF")))
             self._update_temperature()
             self._heating = new_heating
 
@@ -91,19 +91,19 @@ def test_1():
     pid = PID(heater_temperature, heater_set_output, set_point, pid_params['kp'], pid_params['ki'], pid_params['kd'], True)
     pid.set_output_limits(0, 1)
     pid.auto = True
-    for x in xrange(0,100000):
+    for x in range(0,100000):
         elapsed_time = (datetime.datetime.now() - start_time).total_seconds()
         pid.compute()
         if x % 1000 == 0:
-            print "Elapsed time: {}; temperature: {:.2f}".format(elapsed_time, heater.temperature)
+            print(("Elapsed time: {}; temperature: {:.2f}".format(elapsed_time, heater.temperature)))
         if has_large_gap():
             if not set_for_large_gap:
-                print "* RETUNING FOR LARGE GAP"
+                print("* RETUNING FOR LARGE GAP")
                 pid_params = PID_PARAMS['large_gap']
                 pid.set_tunings(pid_params['kp'], pid_params['ki'], pid_params['kd'])
                 set_for_large_gap = True
         elif set_for_large_gap:
-            print "* RETUNING FOR SMALL GAP"
+            print("* RETUNING FOR SMALL GAP")
             pid_params = PID_PARAMS['small_gap']
             pid.set_tunings(pid_params['kp'], pid_params['ki'], pid_params['kd'])
             set_for_large_gap = False
@@ -111,24 +111,25 @@ def test_1():
 
 
 def test_0():
+    print("test 0")
     start_time = datetime.datetime.now()
     heater = SimpleHeater()
 
     def show_heater_status():
         elapsed_seconds = int((datetime.datetime.now() - start_time).total_seconds() + 0.005)
-        print "Elapsed time: {}; temperature: {:.2f}".format(elapsed_seconds, heater.temperature)
+        print("Elapsed time: {}; temperature: {:.2f}".format(elapsed_seconds, heater.temperature))
 
-    for x in xrange(0,5):
+    for x in range(0,5):
         show_heater_status()
         time.sleep(1.0)
-    print "* STARTING TO HEAT"
+    print("* STARTING TO HEAT")
     heater.heating = True
-    for x in xrange(0, 20):
+    for x in range(0, 20):
         show_heater_status()
         time.sleep(1.0)
-    print "* NO MORE HEAT"
+    print("* NO MORE HEAT")
     heater.heating = False
-    for x in xrange(0, 10):
+    for x in range(0, 10):
         show_heater_status()
         time.sleep(1.0)
 
@@ -144,4 +145,4 @@ if __name__ == '__main__':
     elif which_test == 1:
         test_1()
     else:
-        print "No test #{}".format(which_test)
+        print("No test #{}".format(which_test))
