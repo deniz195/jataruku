@@ -83,8 +83,7 @@ a given temperature and hold it there.
 Caveats
 -------
 
-This is basically first draft code and doesn't come with any module
-setup niceties. Since the object is relatively straightforward there's
+This is basically first draft code. Since the object is relatively straightforward there's
 hardly any need. If this bothers you, go ahead and add them,
 though it is not inconceivable that I would eventually get around to it
 myself. Nevertheless, it should be usable as-is without too much

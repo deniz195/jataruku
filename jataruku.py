@@ -3,11 +3,13 @@
 """
     The original is based on Arduino PID Library (Version 1.0.1) by Brett Beauregard <br3ttb@gmail.com> brettbeauregard.com
     The original is made through Jeremy Bornstein
-    This version is the python3 version and is made by Reinier
+    The original was upgraded to python3 compatibility by Reinier
+    This version was fixed for failure on non-monotonic time changes (and some other things) by Deniz Bozyigit <deniz195@gmail.com>
     
 """
 
 import datetime
+import time
 import sys
 
 class PID(object):
@@ -26,7 +28,6 @@ class PID(object):
         self._auto = False
         self._direct = None
         self._sample_time = 100
-        self._sample_timedelta = None
         self._output_value = None
         self._last_input = None
         self._out_min = -sys.maxsize - 1
@@ -36,13 +37,32 @@ class PID(object):
         self.sample_time = 100  # milliseconds
         self.direct = direct
         self.set_tunings(kp, ki, kd)
-        self.last_time = datetime.datetime.now() - self._sample_timedelta
+        self.last_time = PID.monotonic_now_ms() - self._sample_time
 
+    @staticmethod
+    def monotonic_now_ms():
+        # use monotonic time to calculate timedeltas! Available for python >=3.3
+        # https://docs.python.org/3/library/time.html#time.monotonic
+        return time.monotonic() * 1000 # convert to milliseconds
 
-    def initialize(self):
-        self._i_term = self.output_value
+    def initialize(self, new_i_term=None):
+        ''' Initializes PID controller. new_i_term can be set to replace 
+        last i_term. This can avoid hickups when switching controller on/off. E.g.:
+
+        pid.auto = True
+        pid.initialize(new_i_term = 0) 
+        '''
+
+        if new_i_term is None:
+            self._i_term = self.output_value
+        else:
+            self._i_term = new_i_term
+        
         self._last_input = self._input()
-        if self._i_term > self._out_max:
+        
+        if self._i_term is None:
+            self._i_term = 0
+        elif self._i_term > self._out_max:
             self._i_term = self._out_max
         elif self._i_term < self._out_min:
             self._i_term = self._out_min
@@ -51,10 +71,10 @@ class PID(object):
     def compute(self):
         if not self.auto:
             return False
-        now = datetime.datetime.now()
+        now = PID.monotonic_now_ms()
         time_change = now - self.last_time
 
-        if time_change < self._sample_timedelta:
+        if time_change < self._sample_time:
             return False
 
         input_value = self._input()
@@ -120,6 +140,7 @@ class PID(object):
 
     @sample_time.setter
     def sample_time(self, new_sample_time):
+        ''' sample_time is specified in milli seconds. '''
         if new_sample_time <= 0:
             return
 
@@ -127,7 +148,6 @@ class PID(object):
         self._ki *= ratio
         self._kd /= ratio
         self._sample_time = new_sample_time
-        self._sample_timedelta = datetime.timedelta(milliseconds=new_sample_time)
 
     def set_output_limits(self, out_min, out_max):
         if out_min >= out_max:
