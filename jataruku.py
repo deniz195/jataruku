@@ -8,12 +8,11 @@
     
 """
 
-import datetime
 import time
 import sys
 
 class PID(object):
-    def __init__(self, input, output, setpoint, kp, ki, kd, direct):
+    def __init__(self, input, output, setpoint, kp, ki, kd, direct, limits=None, sample_time=100):
         self._output = output
         self._input = input
         self._setpoint = setpoint
@@ -33,8 +32,12 @@ class PID(object):
         self._out_min = -sys.maxsize - 1
         self._out_max = sys.maxsize
 
-        self.set_output_limits(0, 255)
-        self.sample_time = 100  # milliseconds
+        if limits is None:
+            self.set_output_limits(0, 255)
+        else:
+            self.set_output_limits(*limits)
+
+        self.sample_time = sample_time  # in milliseconds
         self.direct = direct
         self.set_tunings(kp, ki, kd)
         self.last_time = PID.monotonic_now_ms() - self._sample_time
